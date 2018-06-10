@@ -33,6 +33,11 @@ public:
     int gauge(const std::string& key, size_t value, float sample_rate = 1.0);
     int timing(const std::string& key, size_t ms, float sample_rate = 1.0);
 
+    int inc(const std::string& key, const std::string& tag, float sample_rate = 1.0);
+    int dec(const std::string& key, const std::string& tag, float sample_rate = 1.0);
+    int count(const std::string& key, const std::string& tag, size_t value, float sample_rate = 1.0);
+    int gauge(const std::string& key, const std::string& tag, size_t value, float sample_rate = 1.0);
+    int timing(const std::string& key, const std::string& tag, size_t ms, float sample_rate = 1.0);
 public:
     /**
      * (Low Level Api) manually send a message
@@ -46,6 +51,8 @@ public:
     int send(std::string key, size_t value,
              const std::string& type, float sample_rate);
 
+    int send(std::string key, const std::string& tag, size_t value,
+             const std::string& type, float sample_rate);
 protected:
     int init();
     void cleanup(std::string& key);

@@ -178,6 +178,26 @@ int StatsdClient::timing(const string& key, size_t ms, float sample_rate)
     return send(key, ms, "ms", sample_rate);
 }
 
+int StatsdClient::dec(const string& key, const string& tag, float sample_rate) {
+    return count(key, tag, -1, sample_rate);
+}
+
+int StatsdClient::inc(const string& key, const string& tag, float sample_rate) {
+    return count(key, tag, 1, sample_rate);
+}
+
+int StatsdClient::count(const string& key, const string& tag, size_t value, float sample_rate) {
+    return send(key, tag, value, "c", sample_rate);
+}
+
+int StatsdClient::gauge(const string& key, const string& tag, size_t value, float sample_rate) {
+    return send(key, tag, value, "g", sample_rate);
+}
+
+int StatsdClient::timing(const string& key, const string& tag, size_t ms, float sample_rate) {
+    return send(key, tag, ms, "ms", sample_rate);
+}
+
 int StatsdClient::send(string key, size_t value, const string &type, float sample_rate)
 {
     if (!should_send(sample_rate)) {
@@ -196,6 +216,25 @@ int StatsdClient::send(string key, size_t value, const string &type, float sampl
     {
         snprintf(buf, sizeof(buf), "%s%s:%zd|%s|@%.2f",
                  d->ns.c_str(), key.c_str(), value, type.c_str(), sample_rate);
+    }
+
+    return send(buf);
+}
+
+int StatsdClient::send(string key, const string& tag, size_t value, const string& type, float sample_rate) {
+    if (!should_send(sample_rate)) {
+        return 0;
+    }
+
+    cleanup(key);
+
+    char buf[256];
+    if ( fequal( sample_rate, 1.0 ) ) {
+        snprintf(buf, sizeof(buf), "%s.%s:%zd|%s|#%s",
+                 d->ns.c_str(), key.c_str(), value, type.c_str(), tag.c_str());
+    } else {
+        snprintf(buf, sizeof(buf), "%s.%s:%zd|%s|@%.2f|#%s",
+                 d->ns.c_str(), key.c_str(), value, type.c_str(), sample_rate, tag.c_str());
     }
 
     return send(buf);
