@@ -209,12 +209,12 @@ int StatsdClient::send(string key, size_t value, const string &type, float sampl
     char buf[256];
     if ( fequal( sample_rate, 1.0 ) )
     {
-        snprintf(buf, sizeof(buf), "%s%s:%zd|%s",
+        snprintf(buf, sizeof(buf), "%s.%s:%zd|%s",
                  d->ns.c_str(), key.c_str(), value, type.c_str());
     }
     else
     {
-        snprintf(buf, sizeof(buf), "%s%s:%zd|%s|@%.2f",
+        snprintf(buf, sizeof(buf), "%s.%s:%zd|%s|@%.2f",
                  d->ns.c_str(), key.c_str(), value, type.c_str(), sample_rate);
     }
 
