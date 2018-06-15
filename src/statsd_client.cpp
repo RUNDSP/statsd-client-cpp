@@ -87,6 +87,9 @@ StatsdClient::~StatsdClient()
         d->sock = -1;
         delete d;
         d = NULL;
+    } else {
+
+        delete d;
     }
 }
 
